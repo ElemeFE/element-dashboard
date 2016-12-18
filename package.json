@@ -1,0 +1,36 @@
+{
+  "name": "element-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cooking watch -p",
+    "dist": "cooking build -p",
+    "alpha": "cooking build --no-color && faas testing -e alpha",
+    "beta": "cooking build --no-color && faas testing -e beta"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElemeFE/element-dashboard.git"
+  },
+  "author": "hanbiao.xiong@ele.me",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ElemeFE/element-dashboard/issues"
+  },
+  "homepage": "https://github.com/ElemeFE/element-dashboard#readme",
+  "dependencies": {
+    "axios": "^0.15.2",
+    "babel-polyfill": "*",
+    "core-js": "^2.4.1",
+    "element-ui": "^1.0.0",
+    "vue": "^2.0.1",
+    "vue-router": "^2.0.3"
+  },
+  "devDependencies": {
+    "cooking-vue2": "*",
+    "css-loader": "^0.26.0",
+    "eslint-config-elemefe": "^0.1.1",
+    "vue-template-compiler": "^2.1.0"
+  }
+}
