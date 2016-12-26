@@ -1,38 +1,35 @@
 import Abstract from './pages/common/abstract';
 import NotFound from './pages/common/404';
-import Demo from './pages/Demo';
+
+// list with filters page
+import ListWithFilters from './pages/list/with-filters';
 
 const routes = [
   {
     path: '/',
-    component: Demo
+    component: ListWithFilters
   },
   {
     path: '/',
     component: Abstract,
     children: [
       {
-        path: 'nav-2',
+        path: 'list',
         component: Abstract,
-        name: 'nav-2',
+        name: '列表',
         iconClass: 'el-icon-message',
         children: [
           {
-            path: 'page-1',
-            name: 'page-1',
-            component: Demo
-          },
-          {
-            path: 'page-2',
-            name: 'page-2',
-            component: Demo
+            path: 'filters',
+            name: '搜索条件',
+            component: ListWithFilters
           }
         ]
       },
       {
         path: 'nav-3',
         name: 'nav-3',
-        component: Demo,
+        component: ListWithFilters,
         iconClass: 'el-icon-menu'
       }
     ]

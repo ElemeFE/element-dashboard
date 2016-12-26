@@ -1,5 +1,20 @@
-// here comes the global css.
-html, body{
+// global styles
+html{
   height: 100%;
   margin: 0;
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.4rem;
+  padding: 0;
+  margin: 0;
+  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }

@@ -1,4 +1,6 @@
 {
-  "extends": "./node_modules/eslint-config-elemefe/index.js",
-  "plugins": ["vue"]
+  "extends": "eslint-config-elemefe",
+  "plugins": [
+    'vue'
+  ]
 }
