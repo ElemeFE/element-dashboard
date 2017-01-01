@@ -16,13 +16,18 @@
 
       <!-- menu start -->
       <aside class="db-menu-wrapper">
-        <el-menu default-active="2" class="db-menu-bar" router>
-          <template v-for="(route, index) in $router.options.routes[0].children">
-            <el-submenu :index="index + ''" v-if="route.children">
-              <template slot="title"><i :class="route.iconClass"></i>{{route.name}}</template>
-              <el-menu-item :index="index + '' + cIndex" v-for="(cRoute, cIndex) in route.children" :route="cRoute">{{cRoute.name}}</el-menu-item>
-            </el-submenu>
-            <el-menu-item :index="index + ''" :route="route" v-if="!route.children"><i :class="route.iconClass"></i>{{route.name}}</el-menu-item>
+        <el-menu :default-active="activeMenu" class="db-menu-bar" router>
+          <template v-for="(route, index) in $router.options.routes[$router.options.routes.length - 2].children">
+            <template v-if="route.children && route.name">
+              <el-submenu :index="route.name">
+                <template slot="title"><i :class="route.iconClass"></i>{{route.name}}</template>
+                <el-menu-item :index="cRoute.name" v-for="(cRoute, cIndex) in route.children" :route="cRoute">{{cRoute.name}}</el-menu-item>
+              </el-submenu>
+            </template>
+
+            <template v-if="!route.children && route.name">
+              <el-menu-item :index="route.name" :route="route"><i :class="route.iconClass"></i>{{route.name}}</el-menu-item>
+            </template>
           </template>
         </el-menu>
       </aside>
@@ -48,8 +53,13 @@ export default {
         id: '123',
         name: 'vvliebe',
         icon: 'https://o0p2nwku4.qnssl.com/favicon.ico'
-      }
+      },
+      activeMenu: 1
     };
+  },
+  created() {
+    console.log(this.$router.history.current);
+    this.activeMenu = this.$router.history.current.name;
   }
 };
 </script>

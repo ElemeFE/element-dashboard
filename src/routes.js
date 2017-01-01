@@ -12,6 +12,11 @@ const root = Vue.component('root', {
 
 let routes = [
   {
+    path: '/404',
+    component: NotFound,
+    name: '404'
+  },
+  {
     path: '/',
     component: root,
     children: [
@@ -56,17 +61,12 @@ let routes = [
     ]
   },
   {
-    path: '/404',
-    component: NotFound,
-    name: '404'
-  },
-  {
     path: '*',
     redirect: {path: '/404'}
   }
 ];
-
-routes[0].children.forEach(route => {
+let menuCount = routes.length;
+routes[menuCount - 2].children.forEach(route => {
   if (route.children) {
     if (!route.meta) route.meta = {};
     route.meta.children = route.children;
