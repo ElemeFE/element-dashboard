@@ -1,17 +1,19 @@
+import Vue from 'vue';
 import Abstract from './pages/common/abstract';
 import NotFound from './pages/common/404';
 
 // list with filters page
 import ListWithFilters from './pages/list/with-filters';
+import BigForm from './pages/form/big-form';
 
-const routes = [
+const root = Vue.component('root', {
+  template: '<router-view></router-view>'
+});
+
+let routes = [
   {
     path: '/',
-    component: ListWithFilters
-  },
-  {
-    path: '/',
-    component: Abstract,
+    component: root,
     children: [
       {
         path: 'list',
@@ -22,7 +24,22 @@ const routes = [
           {
             path: 'filters',
             name: '搜索条件',
-            component: ListWithFilters
+            component: ListWithFilters,
+            imgUrl: 'https://o0p2g4ul8.qnssl.com/vsite%2Fbackground.jpg'
+          }
+        ]
+      },
+      {
+        path: 'form',
+        component: Abstract,
+        name: '表单',
+        iconClass: 'el-icon-document',
+        children: [
+          {
+            path: 'big-form',
+            name: '云服务器订购',
+            component: BigForm,
+            imgUrl: 'https://o0p2g4ul8.qnssl.com/vsite%2Fbackground.jpg'
           }
         ]
       },
@@ -31,6 +48,10 @@ const routes = [
         name: 'nav-3',
         component: ListWithFilters,
         iconClass: 'el-icon-menu'
+      },
+      {
+        path: '',
+        redirect: {name: '搜索条件'}
       }
     ]
   },
@@ -44,5 +65,12 @@ const routes = [
     redirect: {path: '/404'}
   }
 ];
+
+routes[0].children.forEach(route => {
+  if (route.children) {
+    if (!route.meta) route.meta = {};
+    route.meta.children = route.children;
+  }
+});
 
 export default routes;

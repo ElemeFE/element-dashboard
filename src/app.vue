@@ -17,7 +17,7 @@
       <!-- menu start -->
       <aside class="db-menu-wrapper">
         <el-menu default-active="2" class="db-menu-bar" router>
-          <template v-for="(route, index) in $router.options.routes[1].children">
+          <template v-for="(route, index) in $router.options.routes[0].children">
             <el-submenu :index="index + ''" v-if="route.children">
               <template slot="title"><i :class="route.iconClass"></i>{{route.name}}</template>
               <el-menu-item :index="index + '' + cIndex" v-for="(cRoute, cIndex) in route.children" :route="cRoute">{{cRoute.name}}</el-menu-item>
@@ -50,9 +50,6 @@ export default {
         icon: 'https://o0p2nwku4.qnssl.com/favicon.ico'
       }
     };
-  },
-  created() {
-    console.log(this.$router);
   }
 };
 </script>
