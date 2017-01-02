@@ -1,47 +1,60 @@
 <template>
   <section class="db">
+    <template v-if="!$route.meta.hidden">
+      <!-- header start  -->
+      <header class="db-header">
+        <a href="/" class="logo">Element Dashboard</a>
+        <div class="user-info" v-if="user.id">
+          <span v-text="user.username"></span>
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link">
+              <img :src="user.avatar">
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>个人信息</el-dropdown-item>
+              <el-dropdown-item>设置</el-dropdown-item>
+              <el-dropdown-item @click.native="logout">注销</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </header>
+      <!-- header end  -->
 
-    <!-- header start  -->
-    <header class="db-header">
-      <a href="/" class="logo">Element Dashboard</a>
-      <div class="user-info" v-if="user.id">
-        <span v-text="user.name"></span>
-        <img :src="user.icon">
-      </div>
-    </header>
-    <!-- header end  -->
+      <!-- body start  -->
+      <div class="db-body">
 
-    <!-- body start  -->
-    <div class="db-body">
+        <!-- menu start -->
+        <aside class="db-menu-wrapper">
+          <el-menu :default-active="activeMenu" class="db-menu-bar" router>
+            <template v-for="(route, index) in $router.options.routes[$router.options.routes.length - 2].children">
+              <template v-if="route.children && route.name">
+                <el-submenu :index="route.name">
+                  <template slot="title"><i :class="route.iconClass"></i>{{route.name}}</template>
+                  <el-menu-item :index="cRoute.name" v-for="(cRoute, cIndex) in route.children" :route="cRoute">{{cRoute.name}}</el-menu-item>
+                </el-submenu>
+              </template>
 
-      <!-- menu start -->
-      <aside class="db-menu-wrapper">
-        <el-menu :default-active="activeMenu" class="db-menu-bar" router>
-          <template v-for="(route, index) in $router.options.routes[$router.options.routes.length - 2].children">
-            <template v-if="route.children && route.name">
-              <el-submenu :index="route.name">
-                <template slot="title"><i :class="route.iconClass"></i>{{route.name}}</template>
-                <el-menu-item :index="cRoute.name" v-for="(cRoute, cIndex) in route.children" :route="cRoute">{{cRoute.name}}</el-menu-item>
-              </el-submenu>
+              <template v-if="!route.children && route.name">
+                <el-menu-item :index="route.name" :route="route"><i :class="route.iconClass"></i>{{route.name}}</el-menu-item>
+              </template>
             </template>
+          </el-menu>
+        </aside>
+        <!-- menu end -->
 
-            <template v-if="!route.children && route.name">
-              <el-menu-item :index="route.name" :route="route"><i :class="route.iconClass"></i>{{route.name}}</el-menu-item>
-            </template>
-          </template>
-        </el-menu>
-      </aside>
-      <!-- menu end -->
-
-      <!-- content start -->
-      <div class="db-content-wrapper">
-        <section class="db-content">
-          <router-view></router-view>
-        </section>
+        <!-- content start -->
+        <div class="db-content-wrapper">
+          <section class="db-content">
+            <router-view></router-view>
+          </section>
+        </div>
+        <!-- content end -->
       </div>
-      <!-- content end -->
-    </div>
-    <!-- body end  -->
+      <!-- body end  -->
+    </template>
+    <template v-else>
+      <router-view></router-view>
+    </template>
   </section>
 </template>
 
@@ -50,16 +63,34 @@ export default {
   data() {
     return {
       user: {
-        id: '123',
-        name: 'vvliebe',
-        icon: 'https://o0p2nwku4.qnssl.com/favicon.ico'
+        id: '',
+        username: '',
+        avatar: ''
       },
-      activeMenu: 1
+      activeMenu: ''
     };
   },
   created() {
-    console.log(this.$router.history.current);
-    this.activeMenu = this.$router.history.current.name;
+    this.activeMenu = this.$route.name;
+    this.user = JSON.parse(localStorage.getItem('user'));
+  },
+  watch: {
+    '$route'(to, from) {
+      this.activeMenu = this.$route.name;
+      this.user = JSON.parse(localStorage.getItem('user'));
+    }
+  },
+  methods: {
+    logout() {
+      this.$confirm('确定要注销吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(() => {
+        localStorage.removeItem('user');
+        this.$router.push({ path: '/login' });
+      }).catch(() => {});
+    }
   }
 };
 </script>
@@ -68,6 +99,9 @@ export default {
 @import './styles/_variables.scss';
 
 .db {
+  .el-dropdown-menu {
+    margin-top: 20px;
+  }
   // header
   .db-header {
     width: 100%;
@@ -93,6 +127,7 @@ export default {
         height: 25px;
         vertical-align: -7px;
         margin: 0 0 0 10px;
+        cursor: pointer;
       }
     }
   }

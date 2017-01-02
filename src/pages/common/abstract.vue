@@ -28,7 +28,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      let children = vm.$router.history.current.meta.children;
+      let children = vm.$route.meta.children;
       if (children) {
         vm.children = children;
       } else {
@@ -38,7 +38,7 @@ export default {
   },
   watch: {
     '$route'(to, from) {
-      let children = this.$router.history.current.meta.children;
+      let children = this.$route.meta.children;
       if (children) {
         this.children = children;
       } else {
