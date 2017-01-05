@@ -57,7 +57,7 @@ let routes = [
         children: [
           {
             path: 'big-form',
-            name: '云服务器订购',
+            name: '简历管理',
             component: BigForm,
             imgUrl: 'https://o0p2g4ul8.qnssl.com/vsite%2Fbackground.jpg'
           }
