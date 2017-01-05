@@ -14,39 +14,55 @@
           姓名：
           <el-input
             placeholder="请输入姓名"
-            v-model="userName">
+            v-model="filters.userName">
           </el-input>
         </div>
 
         <div class="filter">
           起止时间：
           <el-date-picker
-            v-model="startEndTime"
+            v-model="filters.startEndTime"
             type="datetimerange"
             placeholder="选择时间范围"
             style="width:350px">
           </el-date-picker>
         </div>
 
-        <el-button type="primary" @click="search()">搜索</el-button>
+        <el-button type="primary" @click="handleSearch()">搜索</el-button>
+        <el-button type="primary" @click="createDialog = true">创建</el-button>
       </div>
       <!-- filters end -->
 
       <!-- table start  -->
       <el-table
         :data="users"
-        v-loading.body="loading"
+        v-loading="loading"
+        element-loading-text="拼命加载中"
         stripe
+        @selection-change="handleSelectionChange"
+        @sort-change="handleSortChange"
+        ref="table"
         style="width: 100%">
         <el-table-column
+          type="selection"
+          :reserve-selection="reserveSelection"
+          width="55">
+        </el-table-column>
+        <el-table-column
           prop="date"
-          :formatter="dateFormatter"
+          inline-template
           label="日期"
           width="180">
+          <span>{{ row.date }}</span>
         </el-table-column>
         <el-table-column
           prop="name"
           label="姓名">
+        </el-table-column>
+        <el-table-column
+          prop="age"
+          sortable="custom"
+          label="年龄">
         </el-table-column>
         <el-table-column
           prop="address"
@@ -83,38 +99,132 @@
         </el-pagination>
       </div>
       <!-- pagination end  -->
+
+      <!-- edit dialog start -->
+      <el-dialog title="编辑" v-model="editDialog" size="tiny">
+        <el-form ref="editForm" :model="editForm" label-width="80px">
+          <el-form-item label="姓名">
+            <el-input v-model="editForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="活动时间">
+            <el-date-picker
+              v-model="editForm.time"
+              type="datetime"
+              placeholder="选择日期时间">
+            </el-date-picker>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editDialog = false">取 消</el-button>
+          <el-button type="primary" @click="handleEditSave()">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- edit dialog end -->
+
+      <!-- create dialog start -->
+      <el-dialog title="保存" v-model="createDialog" size="tiny">
+        <el-form ref="createFrom" :model="createForm" label-width="80px">
+          <el-form-item label="姓名">
+            <el-input v-model="createForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="活动时间">
+            <el-date-picker
+              v-model="createForm.time"
+              type="datetime"
+              placeholder="选择日期时间">
+            </el-date-picker>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="createDialog = false">取 消</el-button>
+          <el-button type="primary" @click="handleSave()">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- create dialog end -->
     </div>
   </div>
 </template>
 
 <script>
 import {
-  fetchList
+  fetchList,
+  postSuccess
 } from './../../api/api';
 
-import moment from 'moment';
+// import moment from 'moment';
+// import Vue from 'vue';
 
 export default {
   data() {
     return {
       users: [],
       total: 0,
+      page: 0,
       loading: true,
-      userName: '',
-      startEndTime: ''
+      multipleSelection: [],
+      reserveSelection: false,
+      editDialog: false,
+      createDialog: false,
+      filters: {
+        sortWay: '',
+        userName: '',
+        startEndTime: ''
+      },
+      editForm: {
+        name: '',
+        time: ''
+      },
+      createForm: {
+        name: '',
+        time: ''
+      }
     };
   },
 
   methods: {
-    dateFormatter(row, column) {
-      return moment(row[column.property]).format('YYYY-MM-DD HH-mm-ss');
+    handleSortChange(sortWay) {
+      this.filters.sortWay = {
+        prop: sortWay.prop,
+        order: sortWay.order
+      };
+      this.fetchData();
     },
 
-    handleEdit($index, row) {},
+    handleEditSave() {
+      postSuccess(this.editForm).then(() => {
+        this.fetchData();
+        this.editDialog = false;
+
+        this.$message({
+          message: '编辑成功',
+          type: 'success'
+        });
+      });
+    },
+
+    handleSave() {
+      postSuccess(this.createForm).then(() => {
+        this.fetchData();
+        this.createDialog = false;
+
+        this.$message({
+          message: '保存成功',
+          type: 'success'
+        });
+      });
+    },
+
+    handleEdit($index, row) {
+      this.editDialog = true;
+    },
 
     handleDelete($index, row) {},
 
-    search() {
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+
+    handleSearch() {
       this.fetchData();
     },
 
@@ -122,19 +232,37 @@ export default {
       this.fetchData(val);
     },
 
-    fetchData(page = 1) {
+    fetchData(page) {
+      // param: sort way
+      let sortWay = this.filters.sortWay && this.filters.sortWay.prop ? this.filters.sortWay : '';
+
+      // param: page
+      this.page = page || this.page;
+
+      // param: start time and end end time
+      let startTime = this.filters.startEndTime ? this.filters.startEndTime[0].getTime() : '';
+      let endTime = this.filters.startEndTime ? this.filters.startEndTime[1].getTime() : '';
+
+      let options = {
+        page: this.page,
+        userName: this.filters.userName,
+        startTime: startTime,
+        endTime: endTime,
+        sortWay: sortWay
+      };
+
+      console.log('[dashboard]:your post params');
+      console.log(options);
+
       this.loading = true;
-      fetchList({
-        page: page,
-        userName: this.userName,
-        startEndTime: this.startEndTime
-      }).then((res) => {
-        // lazy load data
-        setTimeout(() => {
-          this.users = res.data.users;
-          this.total = res.data.total;
-          this.loading = false;
-        }, 1000);
+      fetchList(options).then((res) => {
+        // clear selection
+        this.$refs.table.clearSelection();
+
+        // lazy render data
+        this.users = res.data.users;
+        this.total = res.data.total;
+        this.loading = false;
       });
     }
   },

@@ -69,7 +69,7 @@ export default {
     padding: 13px 20px;
     box-sizing: border-box;
     color: #ffffff;
-    z-index: 99999999;
+    z-index: 99;
     position: fixed;
     left: 0;
     top: 0;
@@ -101,7 +101,7 @@ export default {
       background: red;
       height: 100%;
       overflow: auto;
-      z-index: 99999998;
+      z-index: 98;
 
       .db-menu-bar {
         height: 100%;
@@ -113,7 +113,7 @@ export default {
     // content
     .db-content-wrapper {
       width: 100%;
-      z-index: 997;
+      z-index: 97;
       box-sizing: border-box;
       padding: 60px 0px 0px 200px;
 

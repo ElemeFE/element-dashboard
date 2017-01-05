@@ -1,6 +1,9 @@
 {
   "extends": "eslint-config-elemefe",
   "plugins": [
-    'vue'
-  ]
+    "vue"
+  ],
+  "globals": {
+    "Promise": true
+  }
 }
