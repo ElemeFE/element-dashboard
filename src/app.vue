@@ -163,7 +163,7 @@ export default {
         padding: 25px;
 
         .db-content-inner {
-          padding: 10px 0px;
+          padding: 30px 0px;
         }
       }
     }
