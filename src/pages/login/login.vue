@@ -72,7 +72,7 @@ export default {
           if (this.$route.query.redirect) {
             this.$router.push({path: this.$route.query.redirect});
           } else {
-            this.$router.push({path: '/'});
+            this.$router.push({path: '/list'});
           }
         }
       });
@@ -83,14 +83,12 @@ export default {
 
 <style lang="scss" scoped>
   #login-page {
-    color: #D3DCE6;
-
     width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background:#1F2D3D;
+    background: #efeeee;
 
     .login-form {
       display: flex;
@@ -98,16 +96,18 @@ export default {
       align-items: center;
       width: 500px;
       height: 400px;
-      background: #475669;
-      border-radius: 20px;
-      box-shadow: 4px 4px 4px #324057;
+      border-radius: 10px;
+      background: white;
+      border: 1px #eaeaea solid;
+      box-shadow: 0px 0px 25px #cac6c6;
 
       .title {
-        color: #D3DCE6;
+        color: #20a0ff;
         font-weight: bold;
         font-size: 40px;
         text-align: center;
         line-height: 2.2;
+        font-family: sans-serif;
       }
 
       .input-group {

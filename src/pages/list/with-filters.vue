@@ -287,7 +287,7 @@ export default {
 <style lang="scss">
 #ListWithFiltersPage {
   .filters {
-    margin: 20px 0;
+    margin: 0 0 20px 0;
     border: 1px #efefef solid;
     padding: 10px;
     background: #f9f9f9;
