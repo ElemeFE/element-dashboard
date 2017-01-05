@@ -6,6 +6,5 @@ tmp
 *.log
 .idea
 .DS_Store
-dist/
 .tags
 .tags1

@@ -62,16 +62,6 @@ let routes = [
             imgUrl: 'https://o0p2g4ul8.qnssl.com/vsite%2Fbackground.jpg'
           }
         ]
-      },
-      {
-        path: 'nav-3',
-        name: 'nav-3',
-        component: ListWithFilters,
-        iconClass: 'el-icon-menu'
-      },
-      {
-        path: '',
-        redirect: {name: '搜索条件'}
       }
     ]
   },
