@@ -18,7 +18,7 @@ export default {
   },
 
   mounted() {
-    this.breadcrumbs = (this.$parent && this.$parent.$router && this.$parent.$router.history && this.$parent.$router.history.current && this.$parent.$router.history.current.matched) || [];
+    this.breadcrumbs = (this.$parent && this.$parent.$route && this.$parent.$route.matched) || [];
   }
 };
 </script>
