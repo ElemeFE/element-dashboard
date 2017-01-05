@@ -60,6 +60,7 @@
     "html-webpack-plugin": "^2.8.1",
     "http-proxy-middleware": "^0.17.2",
     "json-loader": "^0.5.4",
+    "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.1.1",
     "opn": "^4.0.2",
     "ora": "^0.3.0",
