@@ -218,7 +218,18 @@ export default {
       this.editDialog = true;
     },
 
-    handleDelete($index, row) {},
+    handleDelete($index, row) {
+      postSuccess({
+        id: row.id
+      }).then(() => {
+        this.fetchData();
+
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+      });
+    },
 
     handleSelectionChange(val) {
       this.multipleSelection = val;
