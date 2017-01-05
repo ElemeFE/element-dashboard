@@ -1,4 +1,4 @@
-.PHONY: dist test
+.PHONY: dist test build
 install:
 	@npm install
 
