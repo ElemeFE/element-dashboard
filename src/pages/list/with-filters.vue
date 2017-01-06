@@ -50,10 +50,9 @@
         </el-table-column>
         <el-table-column
           prop="date"
-          inline-template
           label="日期"
+          :formatter="formatDate"
           width="180">
-          <span>{{ row.date }}</span>
         </el-table-column>
         <el-table-column
           prop="name"
@@ -95,6 +94,7 @@
         <el-pagination
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
+          :page-size="15"
           :total="total">
         </el-pagination>
       </div>
@@ -182,6 +182,9 @@ export default {
   },
 
   methods: {
+    formatDate(row) {
+      return new Date(row.date).toLocaleDateString();
+    },
     handleSortChange(sortWay) {
       this.filters.sortWay = {
         prop: sortWay.prop,

@@ -14,13 +14,12 @@ export default {
     let mock = new MockAdapter(axios);
 
     // mock list request
-    let user = { id: 1, name: '王小虎', address: '上海市普陀区金沙江路 1518 弄', age: 12, date: 1482492390763};
     mock.onGet('/list').reply((config) => {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve([200, {
             total: 100,
-            users: this.batchClone(user, 10)
+            users: this.mockUsers(15)
           } ]);
         }, 500);
       });
@@ -97,12 +96,18 @@ export default {
 
   },
 
-  batchClone(origin, count) {
+  mockUsers(count) {
     let result = [];
     let index = count;
 
     while (index-- > 0) {
-      result.push(Object.assign({}, origin));
+      result.push(Mock.mock({
+        id: Mock.Random.guid(),
+        name: Mock.Random.cname(),
+        address: Mock.mock('@county(true)'),
+        'age|18-60': 1,
+        date: Number(Mock.Random.datetime('T'))
+      }));
     }
 
     return result;
