@@ -94,7 +94,7 @@
         <el-pagination
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
-          :page-size="15"
+          :page-size="20"
           :total="total">
         </el-pagination>
       </div>
@@ -104,10 +104,11 @@
       <el-dialog title="编辑" v-model="editDialog" size="tiny">
         <el-form ref="editForm" :model="editForm" label-width="80px">
           <el-form-item label="姓名">
-            <el-input v-model="editForm.name"></el-input>
+            <el-input v-model="editForm.name" class="el-col-24"></el-input>
           </el-form-item>
           <el-form-item label="活动时间">
             <el-date-picker
+              class="el-col-24"
               v-model="editForm.time"
               type="datetime"
               placeholder="选择日期时间">
@@ -125,10 +126,11 @@
       <el-dialog title="保存" v-model="createDialog" size="tiny">
         <el-form ref="createFrom" :model="createForm" label-width="80px">
           <el-form-item label="姓名">
-            <el-input v-model="createForm.name"></el-input>
+            <el-input v-model="createForm.name" class="el-col-24"></el-input>
           </el-form-item>
           <el-form-item label="活动时间">
             <el-date-picker
+              class="el-col-24"
               v-model="createForm.time"
               type="datetime"
               placeholder="选择日期时间">

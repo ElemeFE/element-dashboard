@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { Users } from '../resources/user';
+import { LoginUsers, Users } from '../resources/user';
 import { Schools } from '../resources/schools';
 import { WorkDurationOptions } from '../resources/work-durations';
 import { AcademicOptions } from '../resources/academics';
@@ -15,11 +15,26 @@ export default {
 
     // mock list request
     mock.onGet('/list').reply((config) => {
+      console.log(config, Users);
+      let {page, sortWay, startTime, endTime, userName} = config.params;
+      let mockUsers = Users.filter(user => {
+        if (startTime && user.date < startTime) return false;
+        if (endTime && user.date > endTime) return false;
+        if (userName && user.name !== userName) return false;
+        return true;
+      });
+      if (sortWay) {
+        let {order, prop} = sortWay;
+        mockUsers = mockUsers.sort((u1, u2) => order === 'ascending' ? u1[prop] - u2[prop] : u2[prop] - u1[prop]);
+      }
+      console.log(page);
+      if (page !== 0) mockUsers = mockUsers.filter((u, index) => index < 20 * page && index >= 20 * (page - 1));
+      console.log(mockUsers);
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve([200, {
-            total: 100,
-            users: this.mockUsers(15)
+            total: Users.length,
+            users: mockUsers
           } ]);
         }, 500);
       });
@@ -41,7 +56,7 @@ export default {
       return new Promise((resolve, reject) => {
         let user = null;
         setTimeout(() => {
-          let hasUser = Users.some(u => {
+          let hasUser = LoginUsers.some(u => {
             if (u.username === username && u.password === password) {
               user = JSON.parse(JSON.stringify(u));
               user.password = undefined;
@@ -93,23 +108,5 @@ export default {
         }, Math.random() * 200 + 50);
       });
     });
-
-  },
-
-  mockUsers(count) {
-    let result = [];
-    let index = count;
-
-    while (index-- > 0) {
-      result.push(Mock.mock({
-        id: Mock.Random.guid(),
-        name: Mock.Random.cname(),
-        address: Mock.mock('@county(true)'),
-        'age|18-60': 1,
-        date: Number(Mock.Random.datetime('T'))
-      }));
-    }
-
-    return result;
   }
 };
