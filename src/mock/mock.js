@@ -34,7 +34,6 @@ export default {
 
     mock.onPost('/login').reply(config => {
       let {username, password} = JSON.parse(config.data);
-      console.log(config.data);
       return new Promise((resolve, reject) => {
         let user = null;
         setTimeout(() => {
@@ -83,7 +82,6 @@ export default {
     });
 
     mock.onPost('/resume').reply(config => {
-      console.log(config);
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve([200, {code: 200, msg: '上传成功', resume_id: Mock.Random.guid()}]);

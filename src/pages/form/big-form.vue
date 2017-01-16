@@ -243,17 +243,12 @@ export default {
       this.form.baseInfo.skills.splice(index);
     },
     handleRemove(file, fileList) {
-      console.log('handleRemove');
     },
     handlePreview(file) {
-      console.log('handlePreview');
-      console.log(file);
     },
     handleSuccess() {
-      console.log('success');
     },
     handleError() {
-      console.log('error');
     },
     uploadResume() {
       postResume({data: this.resume[0]}).then(data => {

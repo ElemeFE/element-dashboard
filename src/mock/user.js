@@ -15,10 +15,8 @@ export default {
       let {order, prop} = sortWay;
       mockUsers = mockUsers.sort((u1, u2) => order === 'ascending' ? u1[prop] - u2[prop] : u2[prop] - u1[prop]);
     }
-    console.log(page);
     if (page === 0) page++;
     mockUsers = mockUsers.filter((u, index) => index < 20 * page && index >= 20 * (page - 1));
-    console.log(mockUsers);
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve([200, {
@@ -29,7 +27,6 @@ export default {
     });
   },
   add: config => {
-    console.log(config);
     let { name, address, age, time } = JSON.parse(config.data);
     _Users.push({
       id: Mock.Random.guid(),
@@ -63,7 +60,6 @@ export default {
     let { id, name, address, age, time } = JSON.parse(config.data);
     _Users.some(u => {
       if (u.id === id) {
-        console.log(u);
         u.name = name || u.name;
         u.address = address || u.address;
         u.age = age || u.age;
