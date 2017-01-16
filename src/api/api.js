@@ -2,7 +2,13 @@ import axios from 'axios';
 
 let base = '';
 
-export const fetchList = params => { return axios.get(`${ base }/list`, {params: params}); };
+export const fetchList = params => { return axios.get(`${ base }/user/list`, {params: params}); };
+
+export const addUser = params => { return axios.post(`${ base }/user/add`, params); };
+
+export const editUser = params => { return axios.post(`${ base }/user/edit`, params); };
+
+export const removeUser = params => { return axios.post(`${ base }/user/remove`, params); };
 
 export const postSuccess = params => { return axios.get(`${ base }/success`, {params: params}); };
 

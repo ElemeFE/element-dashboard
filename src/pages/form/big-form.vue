@@ -228,16 +228,16 @@ export default {
       this.selectedSchoolId = item.id;
     },
     addSkill() {
-      this.prevSkills = JSON.parse(JSON.stringify(this.form.baseInfo.skills));
       this.isSkillEdit = true;
       this.form.baseInfo.skills.push({name: '', value: 0});
     },
     saveSkill() {
       this.isSkillEdit = false;
+      this.prevSkills = this.form.baseInfo.skills;
     },
     cancelSaveSkill() {
       this.isSkillEdit = false;
-      this.form.baseInfo.skills = this.prevSkills;
+      this.form.baseInfo.skills = JSON.parse(JSON.stringify(this.prevSkills));
     },
     deleteSkill(index) {
       this.form.baseInfo.skills.splice(index);

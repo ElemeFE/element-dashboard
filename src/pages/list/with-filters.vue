@@ -50,10 +50,9 @@
         </el-table-column>
         <el-table-column
           prop="date"
-          inline-template
           label="日期"
+          :formatter="formatDate"
           width="180">
-          <span>{{ row.date }}</span>
         </el-table-column>
         <el-table-column
           prop="name"
@@ -95,6 +94,7 @@
         <el-pagination
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
+          :page-size="20"
           :total="total">
         </el-pagination>
       </div>
@@ -104,10 +104,11 @@
       <el-dialog title="编辑" v-model="editDialog" size="tiny">
         <el-form ref="editForm" :model="editForm" label-width="80px">
           <el-form-item label="姓名">
-            <el-input v-model="editForm.name"></el-input>
+            <el-input v-model="editForm.name" class="el-col-24"></el-input>
           </el-form-item>
           <el-form-item label="活动时间">
             <el-date-picker
+              class="el-col-24"
               v-model="editForm.time"
               type="datetime"
               placeholder="选择日期时间">
@@ -125,10 +126,11 @@
       <el-dialog title="保存" v-model="createDialog" size="tiny">
         <el-form ref="createFrom" :model="createForm" label-width="80px">
           <el-form-item label="姓名">
-            <el-input v-model="createForm.name"></el-input>
+            <el-input v-model="createForm.name" class="el-col-24"></el-input>
           </el-form-item>
           <el-form-item label="活动时间">
             <el-date-picker
+              class="el-col-24"
               v-model="createForm.time"
               type="datetime"
               placeholder="选择日期时间">
@@ -148,7 +150,9 @@
 <script>
 import {
   fetchList,
-  postSuccess
+  addUser,
+  removeUser,
+  editUser
 } from './../../api/api';
 
 // import moment from 'moment';
@@ -171,6 +175,7 @@ export default {
         startEndTime: ''
       },
       editForm: {
+        id: '',
         name: '',
         time: ''
       },
@@ -182,6 +187,9 @@ export default {
   },
 
   methods: {
+    formatDate(row) {
+      return new Date(row.date).toLocaleDateString();
+    },
     handleSortChange(sortWay) {
       this.filters.sortWay = {
         prop: sortWay.prop,
@@ -191,7 +199,7 @@ export default {
     },
 
     handleEditSave() {
-      postSuccess(this.editForm).then(() => {
+      editUser(this.editForm).then(() => {
         this.fetchData();
         this.editDialog = false;
 
@@ -203,7 +211,7 @@ export default {
     },
 
     handleSave() {
-      postSuccess(this.createForm).then(() => {
+      addUser(this.createForm).then(() => {
         this.fetchData();
         this.createDialog = false;
 
@@ -215,11 +223,12 @@ export default {
     },
 
     handleEdit($index, row) {
+      this.editForm.id = row.id;
       this.editDialog = true;
     },
 
     handleDelete($index, row) {
-      postSuccess({
+      removeUser({
         id: row.id
       }).then(() => {
         this.fetchData();

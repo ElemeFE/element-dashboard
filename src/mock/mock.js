@@ -1,9 +1,10 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { Users } from '../resources/user';
+import { LoginUsers } from '../resources/user';
 import { Schools } from '../resources/schools';
 import { WorkDurationOptions } from '../resources/work-durations';
 import { AcademicOptions } from '../resources/academics';
+import UserAPI from './user';
 import Mock from 'mockjs';
 
 export default {
@@ -14,18 +15,13 @@ export default {
     let mock = new MockAdapter(axios);
 
     // mock list request
-    let user = { id: 1, name: '王小虎', address: '上海市普陀区金沙江路 1518 弄', age: 12, date: 1482492390763};
-    mock.onGet('/list').reply((config) => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve([200, {
-            total: 100,
-            users: this.batchClone(user, 10)
-          } ]);
-        }, 500);
-      });
-    });
+    mock.onGet('/user/list').reply(UserAPI.list);
 
+    mock.onPost('/user/add').reply(UserAPI.add);
+
+    mock.onPost('/user/remove').reply(UserAPI.remove);
+
+    mock.onPost('/user/edit').reply(UserAPI.edit);
     // mock success request
     mock.onGet('/success').reply(200, {
       msg: 'success'
@@ -42,7 +38,7 @@ export default {
       return new Promise((resolve, reject) => {
         let user = null;
         setTimeout(() => {
-          let hasUser = Users.some(u => {
+          let hasUser = LoginUsers.some(u => {
             if (u.username === username && u.password === password) {
               user = JSON.parse(JSON.stringify(u));
               user.password = undefined;
@@ -94,17 +90,5 @@ export default {
         }, Math.random() * 200 + 50);
       });
     });
-
-  },
-
-  batchClone(origin, count) {
-    let result = [];
-    let index = count;
-
-    while (index-- > 0) {
-      result.push(Object.assign({}, origin));
-    }
-
-    return result;
   }
 };
