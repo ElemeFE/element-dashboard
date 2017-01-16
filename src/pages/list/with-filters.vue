@@ -150,7 +150,9 @@
 <script>
 import {
   fetchList,
-  postSuccess
+  addUser,
+  removeUser,
+  editUser
 } from './../../api/api';
 
 // import moment from 'moment';
@@ -173,6 +175,7 @@ export default {
         startEndTime: ''
       },
       editForm: {
+        id: '',
         name: '',
         time: ''
       },
@@ -196,7 +199,7 @@ export default {
     },
 
     handleEditSave() {
-      postSuccess(this.editForm).then(() => {
+      editUser(this.editForm).then(() => {
         this.fetchData();
         this.editDialog = false;
 
@@ -208,7 +211,7 @@ export default {
     },
 
     handleSave() {
-      postSuccess(this.createForm).then(() => {
+      addUser(this.createForm).then(() => {
         this.fetchData();
         this.createDialog = false;
 
@@ -220,11 +223,12 @@ export default {
     },
 
     handleEdit($index, row) {
+      this.editForm.id = row.id;
       this.editDialog = true;
     },
 
     handleDelete($index, row) {
-      postSuccess({
+      removeUser({
         id: row.id
       }).then(() => {
         this.fetchData();

@@ -1,9 +1,10 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { LoginUsers, Users } from '../resources/user';
+import { LoginUsers } from '../resources/user';
 import { Schools } from '../resources/schools';
 import { WorkDurationOptions } from '../resources/work-durations';
 import { AcademicOptions } from '../resources/academics';
+import UserAPI from './user';
 import Mock from 'mockjs';
 
 export default {
@@ -14,32 +15,13 @@ export default {
     let mock = new MockAdapter(axios);
 
     // mock list request
-    mock.onGet('/list').reply((config) => {
-      console.log(config, Users);
-      let {page, sortWay, startTime, endTime, userName} = config.params;
-      let mockUsers = Users.filter(user => {
-        if (startTime && user.date < startTime) return false;
-        if (endTime && user.date > endTime) return false;
-        if (userName && user.name !== userName) return false;
-        return true;
-      });
-      if (sortWay) {
-        let {order, prop} = sortWay;
-        mockUsers = mockUsers.sort((u1, u2) => order === 'ascending' ? u1[prop] - u2[prop] : u2[prop] - u1[prop]);
-      }
-      console.log(page);
-      if (page !== 0) mockUsers = mockUsers.filter((u, index) => index < 20 * page && index >= 20 * (page - 1));
-      console.log(mockUsers);
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve([200, {
-            total: Users.length,
-            users: mockUsers
-          } ]);
-        }, 500);
-      });
-    });
+    mock.onGet('/user/list').reply(UserAPI.list);
 
+    mock.onPost('/user/add').reply(UserAPI.add);
+
+    mock.onPost('/user/remove').reply(UserAPI.remove);
+
+    mock.onPost('/user/edit').reply(UserAPI.edit);
     // mock success request
     mock.onGet('/success').reply(200, {
       msg: 'success'
