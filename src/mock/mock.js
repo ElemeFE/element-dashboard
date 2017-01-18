@@ -23,7 +23,7 @@ export default {
 
     mock.onPost('/user/edit').reply(UserAPI.edit);
     // mock success request
-    mock.onGet('/success').reply(200, {
+    mock.onPost('/resume/add').reply(200, {
       msg: 'success'
     });
 

@@ -20,4 +20,6 @@ export const fetchWorkDurationOptions = params => {return axios.get(`${ base }/w
 
 export const fetchAcademicOptions = params => {return axios.get(`${ base }/academics`).then(res => res.data); };
 
-export const postResume = params => {return axios.post(`${base}/resume`, params).then(res => res.data);};
+export const postResume = params => {return axios.post(`${ base }/resume`, params).then(res => res.data);};
+
+export const createResume = params => { return axios.post(`${ base }/resume/add`).then(res => res.data); };
