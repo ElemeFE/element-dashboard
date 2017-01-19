@@ -90,7 +90,7 @@
       <!-- table end  -->
 
       <!-- pagination start  -->
-      <div class="pagination-wrapper">
+      <div class="pagination-wrapper" v-show="!loading">
         <el-pagination
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
