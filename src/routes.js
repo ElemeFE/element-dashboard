@@ -6,6 +6,7 @@ import NotFound from './pages/common/404';
 import ListWithFilters from './pages/list/with-filters';
 import BigForm from './pages/form/big-form';
 import Login from './pages/login/login';
+import chart from './pages/chart/chart';
 
 const root = Vue.component('root', {
   template: '<router-view></router-view>'
@@ -62,6 +63,20 @@ let routes = [
             imgUrl: 'https://o0p2g4ul8.qnssl.com/vsite%2Fbackground.jpg'
           }
         ]
+      },
+      {
+        path: 'chart',
+        component: chart,
+        name: '图表',
+        iconClass: 'el-icon-document'
+        /* children: [
+          {
+            path: 'big-form',
+            name: '简历管理',
+            component: BigForm,
+            imgUrl: 'https://o0p2g4ul8.qnssl.com/vsite%2Fbackground.jpg'
+          }
+        ]*/
       }
     ]
   },
