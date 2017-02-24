@@ -4,11 +4,12 @@ let _Users = Users;
 
 export default {
   list: config => {
-    let {page, sortWay, startTime, endTime, userName} = config.params;
+    let {page, sortWay, startTime, endTime, userName, age} = config.params;
     let mockUsers = _Users.filter(user => {
       if (startTime && user.date < startTime) return false;
       if (endTime && user.date > endTime) return false;
       if (userName && user.name !== userName) return false;
+      if (age && user.age !== age) return false;
       return true;
     });
     if (sortWay) {

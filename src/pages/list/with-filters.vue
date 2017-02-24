@@ -9,83 +9,43 @@
 
       <!-- filters start -->
       <div class="filters">
-
         <div class="filter">
-          姓名：
-          <el-input
-            placeholder="请输入姓名"
-            v-model="filters.userName">
-          </el-input>
+          <el-select v-model="filters.labelVal" clearable placeholder="请选择">
+            <el-option
+                v-for="item in selectedOptions"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
+          <el-input placeholder="请输入年龄" v-model="filters.age" v-show="filters.labelVal == '1'"></el-input>
+          <el-input placeholder="请输入姓名" v-model="filters.userName" v-show="filters.labelVal == '2'"></el-input>
         </div>
-
         <div class="filter">
           起止时间：
-          <el-date-picker
-            v-model="filters.startEndTime"
-            type="datetimerange"
-            placeholder="选择时间范围"
-            style="width:350px">
-          </el-date-picker>
+          <el-date-picker type="datetimerange" placeholder="选择时间范围" style="width:350px" v-model="filters.startEndTime"></el-date-picker>
         </div>
-
         <el-button type="primary" @click="handleSearch()">搜索</el-button>
         <el-button type="primary" @click="createDialog = true">创建</el-button>
       </div>
       <!-- filters end -->
 
       <!-- table start  -->
-      <el-table
-        :data="users"
-        v-loading="loading"
-        element-loading-text="拼命加载中"
+      <el-table :data="users" ref="table" style="width: 100%" element-loading-text="拼命加载中"
         stripe
+        v-loading="loading"
         @selection-change="handleSelectionChange"
-        @sort-change="handleSortChange"
-        ref="table"
-        style="width: 100%">
-        <el-table-column
-          type="selection"
-          :reserve-selection="reserveSelection"
-          width="55">
+        @sort-change="handleSortChange">
+        <el-table-column type="selection" width="55" :reserve-selection="reserveSelection"></el-table-column>
+        <el-table-column prop="date" label="出生日期" :formatter="formatDate" width="180"></el-table-column>
+        <el-table-column prop="name" label="姓名"></el-table-column>
+        <el-table-column prop="age" sortable="custom" label="年龄"></el-table-column>
+        <el-table-column prop="address" label="地址"></el-table-column>
+        <el-table-column :context="_self" width="150" inline-template label="操作">
+          <div>
+            <el-button size="small" @click="handleEdit($index, row)">编辑</el-button>
+            <el-button size="small" type="danger" @click="handleDelete($index, row)">删除</el-button>
+          </div>
         </el-table-column>
-        <el-table-column
-          prop="date"
-          label="日期"
-          :formatter="formatDate"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="姓名">
-        </el-table-column>
-        <el-table-column
-          prop="age"
-          sortable="custom"
-          label="年龄">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="地址">
-        </el-table-column>
-        <el-table-column
-        :context="_self"
-        width="150"
-        inline-template
-        label="操作">
-        <div>
-          <el-button
-            size="small"
-            @click="handleEdit($index, row)">
-            编辑
-          </el-button>
-          <el-button
-            size="small"
-            type="danger"
-            @click="handleDelete($index, row)">
-            删除
-          </el-button>
-        </div>
-      </el-table-column>
       </el-table>
       <!-- table end  -->
 
@@ -94,8 +54,7 @@
         <el-pagination
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
-          :page-size="20"
-          :total="total">
+          :page-size="20">
         </el-pagination>
       </div>
       <!-- pagination end  -->
@@ -106,12 +65,9 @@
           <el-form-item label="姓名">
             <el-input v-model="editForm.name" class="el-col-24"></el-input>
           </el-form-item>
-          <el-form-item label="活动时间">
-            <el-date-picker
-              class="el-col-24"
-              v-model="editForm.time"
-              type="datetime"
-              placeholder="选择日期时间">
+          <el-form-item label="出生日期">
+            <el-date-picker class="el-col-24" type="datetime" placeholder="选择日期时间"
+              v-model="editForm.time">
             </el-date-picker>
           </el-form-item>
         </el-form>
@@ -128,13 +84,13 @@
           <el-form-item label="姓名">
             <el-input v-model="createForm.name" class="el-col-24"></el-input>
           </el-form-item>
-          <el-form-item label="活动时间">
-            <el-date-picker
-              class="el-col-24"
-              v-model="createForm.time"
-              type="datetime"
-              placeholder="选择日期时间">
+          <el-form-item label="出生日期">
+            <el-date-picker class="el-col-24" type="datetime" placeholder="选择日期时间"
+              v-model="createForm.time">
             </el-date-picker>
+          </el-form-item>
+          <el-form-item label="地址">
+            <el-input v-model="createForm.address" class="el-col-24"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -172,7 +128,9 @@ export default {
       filters: {
         sortWay: '',
         userName: '',
-        startEndTime: ''
+        startEndTime: '',
+        labelVal: '1',
+        age: ''
       },
       editForm: {
         id: '',
@@ -181,8 +139,16 @@ export default {
       },
       createForm: {
         name: '',
-        time: ''
-      }
+        time: '',
+        address: ''
+      },
+      selectedOptions: [{
+        value: '1',
+        label: '年龄'
+      }, {
+        value: '2',
+        label: '姓名'
+      }]
     };
   },
 
@@ -228,14 +194,19 @@ export default {
     },
 
     handleDelete($index, row) {
-      removeUser({
-        id: row.id
+      this.$confirm('是否删除此条信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.fetchData();
-
-        this.$message({
-          message: '删除成功',
-          type: 'success'
+        removeUser({
+          id: row.id
+        }).then(() => {
+          this.fetchData();
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
         });
       });
     },
@@ -262,23 +233,22 @@ export default {
       // param: start time and end end time
       let startTime = this.filters.startEndTime ? this.filters.startEndTime[0].getTime() : '';
       let endTime = this.filters.startEndTime ? this.filters.startEndTime[1].getTime() : '';
-
+      console.log('this.filters.labelVal', this.filters.labelVal);
       let options = {
         page: this.page,
-        userName: this.filters.userName,
+        userName: this.filters.labelVal === '2' ? this.filters.userName : null,
         startTime: startTime,
         endTime: endTime,
-        sortWay: sortWay
+        sortWay: sortWay,
+        age: this.filters.labelVal === '1' ? parseInt(this.filters.age, 10) : null
       };
-
-      console.log('[dashboard]:your post params');
-      console.log(options);
+//      console.log('[dashboard]:your post params');
+//      console.log(options);
 
       this.loading = true;
       fetchList(options).then((res) => {
         // clear selection
         this.$refs.table.clearSelection();
-
         // lazy render data
         this.users = res.data.users;
         this.total = res.data.total;
@@ -306,6 +276,9 @@ export default {
       width: auto;
       padding: 10px;
       border-radius: 5px;
+      .el-select {
+        display: inline-block;
+      }
     }
 
     .el-input {
